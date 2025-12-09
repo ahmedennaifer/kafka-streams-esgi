@@ -1,0 +1,16 @@
+com/streaming/VideoStreamingApp.class
+com/streaming/producer/VideoViewProducer.class
+com/streaming/utils/JsonSerde$JsonSerializer.class
+com/streaming/model/UserSubscription$SubscriptionTier.class
+com/streaming/utils/JsonSerde.class
+com/streaming/utils/JsonSerde$JsonDeserializer.class
+com/streaming/model/VideoMetadata.class
+com/streaming/model/VideoView.class
+com/streaming/streams/VideoStreamingTopology.class
+com/streaming/model/EnrichedVideoView.class
+com/streaming/producer/UserSubscriptionProducer.class
+com/streaming/producer/VideoMetadataProducer.class
+com/streaming/model/VideoStats.class
+com/streaming/api/VideoStreamingApi.class
+com/streaming/config/KafkaConfig.class
+com/streaming/model/UserSubscription.class

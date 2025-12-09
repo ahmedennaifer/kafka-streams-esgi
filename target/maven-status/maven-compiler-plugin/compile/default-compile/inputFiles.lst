@@ -1,0 +1,13 @@
+/Users/nafra/Desktop/code/kraya/kafka/projet/src/main/java/com/streaming/model/EnrichedVideoView.java
+/Users/nafra/Desktop/code/kraya/kafka/projet/src/main/java/com/streaming/utils/JsonSerde.java
+/Users/nafra/Desktop/code/kraya/kafka/projet/src/main/java/com/streaming/model/VideoMetadata.java
+/Users/nafra/Desktop/code/kraya/kafka/projet/src/main/java/com/streaming/model/VideoStats.java
+/Users/nafra/Desktop/code/kraya/kafka/projet/src/main/java/com/streaming/producer/VideoMetadataProducer.java
+/Users/nafra/Desktop/code/kraya/kafka/projet/src/main/java/com/streaming/producer/VideoViewProducer.java
+/Users/nafra/Desktop/code/kraya/kafka/projet/src/main/java/com/streaming/config/KafkaConfig.java
+/Users/nafra/Desktop/code/kraya/kafka/projet/src/main/java/com/streaming/streams/VideoStreamingTopology.java
+/Users/nafra/Desktop/code/kraya/kafka/projet/src/main/java/com/streaming/model/UserSubscription.java
+/Users/nafra/Desktop/code/kraya/kafka/projet/src/main/java/com/streaming/producer/UserSubscriptionProducer.java
+/Users/nafra/Desktop/code/kraya/kafka/projet/src/main/java/com/streaming/model/VideoView.java
+/Users/nafra/Desktop/code/kraya/kafka/projet/src/main/java/com/streaming/VideoStreamingApp.java
+/Users/nafra/Desktop/code/kraya/kafka/projet/src/main/java/com/streaming/api/VideoStreamingApi.java
