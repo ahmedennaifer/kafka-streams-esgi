@@ -158,10 +158,10 @@ Fichier: `src/main/java/com/streaming/api/VideoStreamingApi.java`
 
 Implémentez les endpoints suivants en interrogeant les State Stores:
 
-- [ ] `GET /videos/{videoId}/views` - Nombre de vues
-- [ ] `GET /videos/{videoId}/watch-time` - Temps de visionnage
-- [ ] `GET /videos/{videoId}/metadata` - Métadonnées
-- [ ] `GET /users/{userId}/watch-time` - Temps de visionnage utilisateur
+- [X] `GET /videos/{videoId}/views` - Nombre de vues
+- [X] `GET /videos/{videoId}/watch-time` - Temps de visionnage
+- [X] `GET /videos/{videoId}/metadata` - Métadonnées
+- [X] `GET /users/{userId}/watch-time` - Temps de visionnage utilisateur
 - [ ] `GET /stats/by-genre` - Stats par genre
 - [ ] `GET /stats/by-subscription` - Stats par abonnement
 - [ ] `GET /trending` - Top 10 trending videos
