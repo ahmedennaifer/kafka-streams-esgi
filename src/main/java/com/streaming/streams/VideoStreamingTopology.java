@@ -182,9 +182,12 @@ public class VideoStreamingTopology {
     // - windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMinutes(5)))
     // - count()
     // Nom du store: "trending-videos"
-   KTable<Windowed<String>, Long> trendingVideos = videoViewsStream
+    KTable<Windowed<String>, Long> trendingVideos = videoViewsStream
         .groupByKey(Grouped.with(Serdes.String(), videoViewSerde))
-        .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMinutes(5)))
+        .windowedBy(
+            TimeWindows.ofSizeWithNoGrace(Duration.ofMinutes(5)) 
+                       .advanceBy(Duration.ofMinutes(1))         
+        )
         .count(Materialized.as("trending-videos"));
     // ==================================== // LOGS POUR DEBUG (optionnel)
     // ==============================================
