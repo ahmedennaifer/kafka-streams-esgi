@@ -79,7 +79,7 @@ public class VideoStreamingApi {
     // TODO 5: Récupérer les statistiques par genre
     // GET /stats/by-genre
     // Doit retourner toutes les statistiques du store "views-by-genre"
-    app.get("/stats/by-genre", this::getStatsByGenre);
+    app.get("/stats/by-genre", this::getStatsByGenre); 
 
     // TODO 6: Récupérer les statistiques par type d'abonnement
     // GET /stats/by-subscription
@@ -272,7 +272,6 @@ public class VideoStreamingApi {
           "message", e.getMessage()));
     }
   }
-
   /**
    * TODO 4: Récupérer le temps de visionnage d'un utilisateur
    */
@@ -310,19 +309,69 @@ public class VideoStreamingApi {
    * puis itérer avec un while(iterator.hasNext())
    */
   private void getStatsByGenre(Context ctx) {
-    // VOTRE CODE ICI
-
-    ctx.json(Map.of("error", "Non implémenté"));
+  try {
+    ReadOnlyKeyValueStore<String, Long> store = getKeyValueStore("views-by-genre");
+    
+    Map<String, Long> statsByGenre = new HashMap<>();
+    
+    KeyValueIterator<String, Long> iterator = store.all();
+    
+    while (iterator.hasNext()) {
+      KeyValue<String, Long> entry = iterator.next();
+      statsByGenre.put(entry.key, entry.value);
+    }
+    
+    iterator.close();
+    
+    ctx.json(Map.of(
+        "statsByGenre", statsByGenre
+        // "totalViews", totalViews
+    ));
+    
+  } catch (Exception e) {
+    logger.error("Erreur lors de la récupération des stats par genre", e);
+    ctx.status(500).json(Map.of(
+        "error", "Erreur serveur",
+        "message", e.getMessage()
+    ));
   }
+}
 
   /**
    * TODO 6: Récupérer les statistiques par type d'abonnement
    */
   private void getStatsBySubscription(Context ctx) {
-    // VOTRE CODE ICI
-
-    ctx.json(Map.of("error", "Non implémenté"));
+  try {
+    ReadOnlyKeyValueStore<String, Long> store = getKeyValueStore("views-by-subscription");
+    
+    Map<String, Long> statsBySubscription = new HashMap<>();
+    
+    KeyValueIterator<String, Long> iterator = store.all();
+    
+    while (iterator.hasNext()) {
+      KeyValue<String, Long> entry = iterator.next();
+      statsBySubscription.put(entry.key, entry.value);
+    }
+    
+    iterator.close();
+    
+    long totalViews = statsBySubscription.values().stream()
+        .mapToLong(Long::longValue)
+        .sum();
+    
+    ctx.json(Map.of(
+        "statsBySubscription", statsBySubscription,
+        "totalViews", totalViews
+    ));
+    
+  } catch (Exception e) {
+    logger.error("Erreur lors de la récupération des stats par abonnement", e);
+    ctx.status(500).json(Map.of(
+        "error", "Erreur serveur",
+        "message", e.getMessage()
+    ));
   }
+}
 
   /**
    * TODO 7: Récupérer les vidéos trending

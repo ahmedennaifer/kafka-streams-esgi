@@ -67,7 +67,7 @@ public class VideoStreamingTopology {
         KafkaConfig.USER_SUBSCRIPTIONS_TOPIC,
         Consumed.with(Serdes.String(), userSubscriptionSerde),
         Materialized.as("user-subscriptions-store"));
-
+ 
     // ==============================================
     // TODO 2: LIRE LE STREAM DE VUES
     // ==============================================
@@ -147,16 +147,30 @@ public class VideoStreamingTopology {
     // Problème: la clé actuelle est videoId, mais on a besoin de userId pour le
     // join
     // Indice: selectKey() pour changer la clé vers userId, puis leftJoin()
-    KStream<String, EnrichedVideoView> fullyEnrichedViews = null;
-    // VOTRE CODE ICI
+    var enrichedVideoViewSerde = new JsonSerde<>(EnrichedVideoView.class);
+     KStream<String, EnrichedVideoView> fullyEnrichedViews = enrichedViews
+        .selectKey((key, value) -> value.getUserId())
+        .filter((key, value) -> value != null)
+        .leftJoin(
+            userSubscriptionsTable,
+            (videoView, userSubscription) -> {
+              var subCass = userSubscription.getClass();
+              videoView.setSubscriptionTier(userSubscription.getClass().getCanonicalName());
+              return videoView;
+            },
+            Joined.with(
+                Serdes.String(),
+                enrichedVideoViewSerde,
+                userSubscriptionSerde));
 
     // TODO 5.2: Calculer les statistiques par type d'abonnement
     // Combien de vues pour chaque tier (FREE, PREMIUM, VIP) ?
     // Indice: selectKey() vers subscriptionTier, groupByKey(), count()
     // Nom du store: "views-by-subscription"
-    KTable<String, Long> viewsBySubscription = null;
-    // VOTRE CODE ICI
-
+    KTable<String, Long> viewsBySubscription = fullyEnrichedViews
+        .selectKey((key, value) -> value.getSubscriptionTier()) 
+        .groupByKey(Grouped.with(Serdes.String(), enrichedVideoViewSerde))
+        .count(Materialized.as("views-by-subscription"));
     // ==============================================
     // TODO 6: WINDOWING - TRENDING VIDEOS
     // ==============================================
@@ -168,9 +182,10 @@ public class VideoStreamingTopology {
     // - windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMinutes(5)))
     // - count()
     // Nom du store: "trending-videos"
-    KTable<Windowed<String>, Long> trendingVideos = null;
-    // VOTRE CODE ICI
-
+   KTable<Windowed<String>, Long> trendingVideos = videoViewsStream
+        .groupByKey(Grouped.with(Serdes.String(), videoViewSerde))
+        .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMinutes(5)))
+        .count(Materialized.as("trending-videos"));
     // ==================================== // LOGS POUR DEBUG (optionnel)
     // ==============================================
 
