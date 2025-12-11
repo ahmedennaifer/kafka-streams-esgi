@@ -383,10 +383,50 @@ public class VideoStreamingApi {
    * - Trier par count décroissant et prendre le top 10
    */
   private void getTrendingVideos(Context ctx) {
-    // VOTRE CODE ICI
+      try {
+          ReadOnlyWindowStore<String, Long> store = getWindowStore("trending-videos");
+          // Récupérer toutes les fenêtres
+          List<Map<String, Object>> results = new ArrayList<>();
+          Instant now = Instant.now();
+          Instant from = now.minusSeconds(300); // 5 minutes = 300s
+          // fetchAll → récupère *toutes* les fenêtres contenant des valeurs
+          try (KeyValueIterator<Windowed<String>, Long> iterator = store.fetchAll(from, now)) {
+              while (iterator.hasNext()) {
+                  KeyValue<Windowed<String>, Long> entry = iterator.next();
 
-    ctx.json(Map.of("error", "Non implémenté"));
+                  String videoId = entry.key.key();
+                  long count = entry.value;
+
+                  results.add(Map.of(
+                          "videoId", videoId,
+                          "count", count,
+                          "windowStart", entry.key.window().start(),
+                          "windowEnd", entry.key.window().end()
+                  ));
+              }
+          }
+          // Trier par count décroissant 
+          results.sort((a, b) -> Long.compare((Long) b.get("count"), (Long) a.get("count")));
+
+          // Prendre top 10
+          List<Map<String, Object>> top10 = results.stream()
+                  .limit(10)
+                  .toList();
+
+          ctx.json(Map.of(
+                  "topTrendingVideos", top10
+          ));
+
+      } catch (Exception e) {
+          logger.error("Erreur trending", e);
+          ctx.status(500).json(Map.of(
+                  "error", "Erreur lors de la lecture du store trending",
+                  "message", e.getMessage()
+          ));
+      }
   }
+
+
 
   /**
    * TODO 8 (BONUS): Combiner plusieurs stores pour avoir une vue complète
