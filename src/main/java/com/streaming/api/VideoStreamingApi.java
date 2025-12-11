@@ -432,9 +432,43 @@ public class VideoStreamingApi {
    * TODO 8 (BONUS): Combiner plusieurs stores pour avoir une vue complète
    */
   private void getAllVideos(Context ctx) {
-    // VOTRE CODE ICI
+    try {
+      ReadOnlyKeyValueStore<String, VideoMetadata> metadataStore = getKeyValueStore("video-metadata-store");
+      ReadOnlyKeyValueStore<String, Long> viewCountsStore = getKeyValueStore("video-view-counts");
+      ReadOnlyKeyValueStore<String, Long> watchTimeStore = getKeyValueStore("video-watch-time");
 
-    ctx.json(Map.of("error", "Non implémenté"));
+      List<Map<String, Object>> videos = new ArrayList<>();
+
+      KeyValueIterator<String, VideoMetadata> iterator = metadataStore.all();
+
+      while (iterator.hasNext()) {
+        KeyValue<String, VideoMetadata> entry = iterator.next();
+        VideoMetadata metadata = entry.value;
+        String videoId = entry.key;
+
+        Long viewCount = viewCountsStore.get(videoId);
+        Long watchTime = watchTimeStore.get(videoId);
+
+        Map<String, Object> videoData = new HashMap<>();
+        videoData.put("videoId", videoId);
+        videoData.put("title", metadata.getTitle());
+        videoData.put("genre", metadata.getGenre());
+        videoData.put("releaseYear", metadata.getReleaseYear());
+        videoData.put("durationMinutes", metadata.getDurationMinutes());
+        videoData.put("viewCount", viewCount != null ? viewCount : 0);
+        videoData.put("watchTimeSeconds", watchTime != null ? watchTime : 0);
+
+        videos.add(videoData);
+      }
+
+      iterator.close();
+
+      ctx.json(Map.of("videos", videos, "count", videos.size()));
+
+    } catch (Exception e) {
+      logger.error("error getting all videos", e);
+      ctx.status(500).json(Map.of("error", "error", "message", e.getMessage()));
+    }
   }
 
   // ==============================================

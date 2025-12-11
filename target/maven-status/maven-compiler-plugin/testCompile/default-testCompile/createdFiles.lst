@@ -1,0 +1,3 @@
+com/streaming/integration/VideoStreamingIntegrationTest.class
+com/streaming/streams/VideoStreamingTopologyTest.class
+com/streaming/model/ModelsUnitTest.class
