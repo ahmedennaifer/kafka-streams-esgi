@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.streaming.streams.VideoStreamingTopologyTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.20 s -- in com.streaming.streams.VideoStreamingTopologyTest

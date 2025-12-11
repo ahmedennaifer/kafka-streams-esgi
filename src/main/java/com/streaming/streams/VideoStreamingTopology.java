@@ -152,7 +152,7 @@ public class VideoStreamingTopology {
                                 userSubscriptionsTable,
                                 (videoView, userSubscription) -> {
                                 if (userSubscription != null) {
-                                        videoView.setSubscriptionTier(userSubscription.getTier().name());
+                                        videoView.setSubscriptionTier(userSubscription.getTier().name()); //retourne free premium ou vip
                                 }
                                 return videoView;
                                 },
